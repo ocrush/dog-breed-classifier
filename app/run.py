@@ -1,41 +1,45 @@
-
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
-from dog_classifier import DogClassifier
+from dog_classifier import DogPredictor
 import os
 
 UPLOAD_FOLDER = 'static/uploads/'
+
+dog_classifier = DogPredictor()
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-
-dog_classifier = DogClassifier()
-
 @app.route('/')
 def upload_img():
-	return render_template('master.html')
+    return render_template('master.html')
+
+
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/', methods=['POST'])
 @app.route('/index', methods=['POST'])
 def index():
-    if 'imgFile' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
-    img_file = request.files['imgFile']
-    if img_file.filename == '':
-        flash('No image selected for uploading')
-        return redirect(request.url)
-    # only image files are accepted so can proceed here
-    filename = secure_filename(img_file.filename)
-    img_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    filename = "uploads/" + filename
-    matching_file, error = dog_classifier.dog_breed_matching_file(filename)
-    if len(error) > 0:
-        return render_template("master.html", error=error)
-    matching_secure_file = "uploads/" + secure_filename(matching_file)
+    if request.method == 'POST':
+        if 'imgFile' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        img_file = request.files['imgFile']
+        if img_file.filename == '':
+            flash('No image selected for uploading')
+            return redirect(request.url)
+        # only image files are accepted so can proceed here
+        filename = secure_filename(img_file.filename)
+        img_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        matching_file, error = dog_classifier.dog_breed_matching_file(
+            os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if len(error) > 0:
+            return render_template("master.html", error=error)
+        matching_secure_file = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(matching_file))
 
-    return render_template("master.html", orig_image=filename, matching_breed=matching_secure_file)
+        return render_template("master.html",
+                               orig_image=os.path.join("uploads", filename),
+                               matching_breed=matching_secure_file)
 
 
 # web page that handles user query and displays model results
