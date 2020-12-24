@@ -31,15 +31,14 @@ def index():
         # only image files are accepted so can proceed here
         filename = secure_filename(img_file.filename)
         img_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        matching_file, error = dog_classifier.dog_breed_matching_file(
+        matching_breed, error = dog_classifier.dog_breed_matching_file(
             os.path.join(app.config['UPLOAD_FOLDER'], filename))
         if len(error) > 0:
             return render_template("master.html", error=error)
-        matching_secure_file = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(matching_file))
 
         return render_template("master.html",
                                orig_image=os.path.join("uploads", filename),
-                               matching_breed=matching_secure_file)
+                               matching_breed=os.path.join("predicted", matching_breed + ".jpg"))
 
 
 # web page that handles user query and displays model results

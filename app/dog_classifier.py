@@ -58,7 +58,7 @@ class DogPredictor:
         self.face_cascade = cv2.CascadeClassifier('../haarcascades/haarcascade_frontalface_alt.xml')
 
         self.dog_classifier = DogClassifier()
-        self.train_files, _ = self.load_dataset('../dogImages/train')
+        #self.train_files, _ = self.load_dataset('../dogImages/train')
 
     # define function to load train, test, and validation datasets
 
@@ -106,10 +106,10 @@ class DogPredictor:
             predicted_result = self.dog_classifier.predict_breed(self.path_to_tensor(img_path))
             predicted_breed = predicted_result.split('.')[1]
             print("This photo look like {}".format(predicted_breed))
-            matching_dog_file = self.get_matching_dog_file(self.train_files, predicted_result)
-            if len(matching_dog_file) > 0:
+            #matching_dog_file = self.get_matching_dog_file(self.train_files, predicted_result)
+            if len(predicted_breed) > 0:
                 error = ''
-                return matching_dog_file, error
+                return predicted_breed, error
 
         return '', error
 
