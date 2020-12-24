@@ -1,4 +1,5 @@
 from glob import glob
+import os
 import numpy as np
 from sklearn.datasets import load_files
 from keras.utils import np_utils
@@ -44,8 +45,9 @@ class DogClassifier:
         self.model.add(Dense(133, activation='softmax'))
         self.model.load_weights('../saved_models/weights.best.Resnet50.hdf5')
         self.graph = tf.get_default_graph()
-        self.dog_names = [item[20:-1] for item in sorted(glob("../dogImages/train/*/"))]
+        #self.dog_names = [item[20:-1] for item in sorted(glob("../dogImages/train/*/"))]
 
+        self.dog_names = [os.path.basename(x) for x in sorted(glob("static/predicted/*.jpg"))]
     def predict_breed(self, features):
 
         # obtain predicted vector
@@ -136,7 +138,7 @@ class DogPredictor:
             # extract bottleneck features
 
             predicted_result = self.dog_classifier.predict_breed(self.path_to_tensor(img_path))
-            predicted_breed = predicted_result.split('.')[1]
+            predicted_breed = predicted_result.split('.')[0]
             print("This photo look like {}".format(predicted_breed))
             #matching_dog_file = self.get_matching_dog_file(self.train_files, predicted_result)
             if len(predicted_breed) > 0:
@@ -147,5 +149,5 @@ class DogPredictor:
 
 if __name__ == '__main__':
     doc = DogPredictor()
-    matching_file,error = doc.dog_breed_matching("static/uploads/Boxer_02360.jpg")
+    matching_file,error = doc.dog_breed_matching("static/predicted/Boxer.jpg")
     print(matching_file)
