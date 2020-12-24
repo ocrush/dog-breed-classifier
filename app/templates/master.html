@@ -56,7 +56,7 @@
         {% if matching_breed %}
             <div class="page-header">
                 <h1 class="text-center">Results of Dog Breed Classifier</h1>
-                <h6 class="text-center">Most Likely breed for your uploaded image:</h6>
+                <h6 class="text-center">Most Likely breed for your uploaded image: {{breed_name}}</h6>
             </div>
 	        <div class="row">
                 <div class="col-md-6">
@@ -74,7 +74,7 @@
             </div>
 	        <div class="row">
                 <div class="col-md-6">
-		            <img height="300px" width="300px" src="{{ url_for('static', filename=filename) }}">
+		            <img height="300px" width="300px" src="{{ url_for('static', filename=orig_image) }}">
                 </div>
                 <div class="col-md-6">
                     <p class="text-center">{{error}}</p>

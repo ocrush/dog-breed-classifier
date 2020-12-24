@@ -34,11 +34,12 @@ def index():
         matching_breed, error = dog_classifier.dog_breed_matching(
             os.path.join(app.config['UPLOAD_FOLDER'], filename))
         if len(error) > 0:
-            return render_template("master.html", error=error)
+            return render_template("master.html", orig_image=os.path.join("uploads", filename), error=error)
 
         return render_template("master.html",
                                orig_image=os.path.join("uploads", filename),
-                               matching_breed=os.path.join("predicted", matching_breed + ".jpg"))
+                               matching_breed=os.path.join("predicted", matching_breed + ".jpg"),
+                               breed_name=matching_breed)
 
 
 # web page that handles user query and displays model results
