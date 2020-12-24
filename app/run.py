@@ -31,7 +31,7 @@ def index():
         # only image files are accepted so can proceed here
         filename = secure_filename(img_file.filename)
         img_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        matching_breed, error = dog_classifier.dog_breed_matching_file(
+        matching_breed, error = dog_classifier.dog_breed_matching(
             os.path.join(app.config['UPLOAD_FOLDER'], filename))
         if len(error) > 0:
             return render_template("master.html", error=error)
